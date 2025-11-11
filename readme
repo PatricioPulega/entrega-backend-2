@@ -1,0 +1,109 @@
+# 🛒 Backend Ecommerce – Entrega 1
+
+Proyecto desarrollado como parte del curso de Backend en Coderhouse. Esta entrega implementa un servidor Express con autenticación JWT, persistencia en MongoDB, vistas con Handlebars y operaciones completas sobre productos, carritos y usuarios.
+
+[🔗 Repositorio en GitHub](https://github.com/usuario/repositorio) <!-- Reemplazá con tu link real -->
+
+---
+
+## 🚀 Tecnologías utilizadas
+
+- Node.js + Express
+- MongoDB + Mongoose
+- Handlebars
+- JSON Web Tokens (JWT)
+- Passport + passport-jwt + passport-local
+- Bcrypt
+- Dotenv
+- Nodemon
+
+---
+
+## 📁 Estructura del proyecto
+src/ ├── config/           # Configuración de MongoDB y Passport 
+     ├── dao/              # Acceso a datos (carritos, productos) 
+     ├── models/           # Esquemas de Mongoose (Product, Cart, User) 
+     ├── routes/           # Rutas de API y vistas 
+     ├── views/            # Plantillas Handlebars 
+     ├── public/           # Archivos estáticos 
+     ├── utils/            # Constantes y helpers 
+     ├── app.js            # Configuración principal del servido
+
+
+---
+
+## 🔐 Autenticación y Autorización
+
+- Registro (`POST /api/sessions/register`): crea usuario con contraseña encriptada y carrito automático
+- Login (`POST /api/sessions/login`): genera token JWT válido
+- Ruta protegida (`GET /api/sessions/current`): devuelve datos del usuario autenticado mediante JWT
+
+---
+
+## 📦 Endpoints de productos
+
+| Método | Ruta                      | Descripción                  |
+|--------|---------------------------|------------------------------|
+| GET    | `/api/products`           | Listar todos los productos   |
+| GET    | `/api/products/:pid`      | Obtener producto por ID      |
+| POST   | `/api/products`           | Crear nuevo producto         |
+| PUT    | `/api/products/:pid`      | Actualizar producto          |
+| DELETE | `/api/products/:pid`      | Eliminar producto            |
+
+---
+
+## 🛒 Endpoints de carritos
+
+| Método | Ruta                                         | Descripción                        |
+|--------|----------------------------------------------|------------------------------------|
+| GET    | `/api/carts/:cid`                            | Obtener carrito por ID             |
+| POST   | `/api/carts/:cid/product/:pid`               | Agregar producto al carrito        |
+| DELETE | `/api/carts/:cid/product/:pid`               | Eliminar producto del carrito      |
+| PUT    | `/api/carts/:cid`                            | Reemplazar productos del carrito   |
+| DELETE | `/api/carts/:cid`                            | Vaciar carrito                     |
+
+---
+
+## 🎨 Vistas con Handlebars
+
+- `/` → Muestra productos
+- `/cart/:cid` → Muestra productos del carrito
+- `*` → Página no encontrada (`notFound.handlebars`)
+
+---
+
+## ⚙️ Variables de entorno
+
+Crear un archivo `.env` en la raíz con el siguiente contenido:
+
+```env
+MONGO_URI=mongodb+srv://<usuario>:<password>@<cluster>.mongodb.net/ecommerce
+JWT_SECRET=claveultrasecreta
+PORT=8080
+
+🧪 Cómo ejecutar el proyecto
+git clone https://github.com/usuario/repositorio
+cd repositorio
+npm install
+npm run dev
+
+📜 Modelo de Usuario
+{
+  first_name: String,
+  last_name: String,
+  email: { type: String, unique: true, required: true },
+  age: Number,
+  password: { type: String, required: true },
+  cart: { type: mongoose.Schema.Types.ObjectId, ref: 'carts' },
+  role: { type: String, default: 'user' }
+}
+
+
+Contraseña encriptada con bcrypt.hashSync. El carrito se crea automáticamente al registrarse.
+
+📬 Autor
+Patricio Pulega – Entrega 1 Backend 2 – Coderhouse
+
+
+
+
