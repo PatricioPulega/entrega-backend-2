@@ -1,15 +1,47 @@
 <div class="box">
-    <div class="view-products"><a id="button-products" class="button" href="/products">Volver</a></div>
-    <h1>Productos</h1>
-    <div class="products-box">
-        {{#each products}}
-            <div class="product-card">
-                <h3>{{this.product.title}}</h3>
-                <hr>
-                <p>Categoria: {{this.product.category}}</p>
-                <p>Precio: $ {{this.product.price}}</p>
-                <p>Cantidad: {{this.quantity}}</p>
-            </div>
-        {{/each}}
+  <div class="view-products">
+    <a id="button-products" class="button" href="/products">Volver</a>
+  </div>
+
+  <h1>Carrito</h1>
+
+  <div class="products-box">
+    {{#each products}}
+      <div class="product-card">
+        <h3>{{this.product.title}}</h3>
+        <hr>
+        <p>Categoria: {{this.product.category}}</p>
+        <p>Precio: $ {{this.product.price}}</p>
+        <p>Cantidad: {{this.quantity}}</p>
+      </div>
+    {{/each}}
+  </div>
+
+  <div class="footer">
+    <button id="button-purchase" onclick="finalizeCartPurchase('{{cartId}}')">
+      Finalizar compra
+    </button>
+  </div>
+
+  {{#if ticket}}
+    <div class="ticket-box">
+      <h2>Ticket de compra</h2>
+      <p>Código: {{ticket.code}}</p>
+      <p>Monto total: $ {{ticket.amount}}</p>
+      <p>Comprador: {{ticket.purchaser}}</p>
     </div>
+  {{/if}}
+
+  {{#if unavailable}}
+    <div class="unavailable-box">
+      <h2>Productos no disponibles</h2>
+      <ul>
+        {{#each unavailable}}
+          <li>{{this.title}}</li>
+        {{/each}}
+      </ul>
+    </div>
+  {{/if}}
 </div>
+
+<script src="/js/ecommerce.js"></script>
