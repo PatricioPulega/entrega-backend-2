@@ -5,17 +5,17 @@
 
   <h1>Carrito</h1>
 
-  <div class="products-box">
+  <section class="products-box">
     {{#each products}}
-      <div class="product-card">
+      <article class="product-card">
         <h3>{{this.product.title}}</h3>
         <hr>
         <p>Categoria: {{this.product.category}}</p>
         <p>Precio: $ {{this.product.price}}</p>
         <p>Cantidad: {{this.quantity}}</p>
-      </div>
+      </article>
     {{/each}}
-  </div>
+  </section>
 
   <div class="footer">
     <button id="button-purchase" onclick="finalizeCartPurchase('{{cartId}}')">
@@ -32,11 +32,11 @@
     </div>
   {{/if}}
 
-  {{#if unavailable}}
+  {{#if unfulfilledItems}}
     <div class="unavailable-box">
       <h2>Productos no disponibles</h2>
       <ul>
-        {{#each unavailable}}
+        {{#each unfulfilledItems}}
           <li>{{this.title}}</li>
         {{/each}}
       </ul>

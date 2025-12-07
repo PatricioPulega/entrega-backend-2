@@ -1,11 +1,32 @@
 import { Router } from 'express';
-import { requireAuth } from '../middleware/auth.js';
-import { authorize } from '../middleware/authorize.js';
-import { finalizePurchase } from '../controllers/tickets.controller.js';
+import passport from 'passport';
+import { getTickets, getTicketById, deleteTicket } from '../controllers/tickets.controller.js';
+import { authorizeRole } from '../middlewares/authorizeRole.js';
 
 const router = Router();
 
-// Endpoint para finalizar compra y generar ticket
-router.post('/:cid/purchase', requireAuth, authorize('user'), finalizePurchase);
+// Listar tickets (solo admin)
+router.get(
+  '/',
+  passport.authenticate('current', { session: false }),
+  authorizeRole('admin'),
+  getTickets
+);
+
+// Obtener ticket por ID (admin o dueño del ticket)
+router.get(
+  '/:tid',
+  passport.authenticate('current', { session: false }),
+  authorizeRole(['admin', 'user']),
+  getTicketById
+);
+
+// Eliminar ticket (solo admin)
+router.delete(
+  '/:tid',
+  passport.authenticate('current', { session: false }),
+  authorizeRole('admin'),
+  deleteTicket
+);
 
 export default router;

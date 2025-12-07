@@ -1,17 +1,18 @@
-import { generateToken, verifyToken } from '../config/jwt.js';
+import jwt from 'jsonwebtoken';
 
-// Crear un token para un usuario (ej. al registrarse o loguearse)
-export const createUserToken = (user) => {
-  // Solo guardás datos seguros en el payload
-  const payload = { id: user._id, email: user.email, role: user.role };
-  return generateToken(payload, '1h'); // expira en 1 hora
+const RESET_SECRET = process.env.JWT_RESET_SECRET || 'resetSecret';
+const RESET_EXPIRATION = process.env.JWT_RESET_EXPIRATION || '1h';
+
+// Generar token de reset
+export const signResetToken = (userId) => {
+  return jwt.sign({ id: userId }, RESET_SECRET, { expiresIn: RESET_EXPIRATION });
 };
 
-// Validar token recibido (ej. en un middleware)
-export const validateUserToken = (token) => {
-  const decoded = verifyToken(token);
-  if (!decoded) {
-    return { valid: false, error: 'Token inválido o expirado' };
+// Verificar token de reset
+export const verifyResetToken = (token) => {
+  try {
+    return jwt.verify(token, RESET_SECRET);
+  } catch (err) {
+    return null; // si es inválido o expirado
   }
-  return { valid: true, data: decoded };
 };

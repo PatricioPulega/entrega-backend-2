@@ -1,54 +1,57 @@
+import CartsDAO from '../dao/carts.dao.js';
+import ProductsDAO from '../dao/products.dao.js';
+import TicketsDAO from '../dao/tickets.dao.js';
 import { v4 as uuidv4 } from 'uuid';
+import { TicketDTO } from '../dtos/ticket.dto.js';
 
-export class PurchaseService {
-  constructor(clientesRepository, productosRepository, ticketsRepository) {
-    this.clientesRepository = clientesRepository;
-    this.productosRepository = productosRepository;
-    this.ticketsRepository = ticketsRepository;
-  }
+const cartsDAO = new CartsDAO();
+const productsDAO = new ProductsDAO();
+const ticketsDAO = new TicketsDAO();
 
-  async finalizePurchase(cid, productos = []) {
-    const errores = [];
-    let total = 0;
+export default {
+  async purchaseCart(cid, userEmail) {
+    const cart = await cartsDAO.getById(cid);
+    if (!cart) throw new Error('Carrito no encontrado');
 
-    const cliente = await this.clientesRepository.getById(cid);
-    if (!cliente) {
-      return { status: 'error', errors: [`Cliente con id ${cid} no encontrado`] };
-    }
+    let amount = 0;
+    const unfulfilledItems = [];
+    const fulfilledItems = [];
 
-    for (const item of productos) {
-      const producto = await this.productosRepository.getById(item.id);
-      if (!producto || producto.stock < item.cantidad) {
-        errores.push(`Problemas con el producto id ${item.id}`);
+    for (const item of cart.products) {
+      const product = await productsDAO.findById(item.product);
+      if (!product) continue;
+
+      if (product.stock >= item.quantity) {
+        await productsDAO.updateById(product._id, { stock: product.stock - item.quantity });
+        amount += product.price * item.quantity;
+        fulfilledItems.push({ product: product._id, quantity: item.quantity });
       } else {
-        item.descrip = producto.descrip;
-        item.price = producto.price;
-        item.subtotal = producto.price * item.cantidad;
-        total += item.subtotal;
-
-        await this.productosRepository.update(item.id, {
-          stock: producto.stock - item.cantidad
+        unfulfilledItems.push({
+          id: product._id,
+          title: product.title,
+          requested: item.quantity,
+          available: product.stock
         });
       }
     }
 
-    if (errores.length > 0) {
-      return { status: 'error', errors: errores };
-    }
-
-    const ticket = await this.ticketsRepository.create({
+    // Generar ticket
+    const ticketDoc = await ticketsDAO.create({
       code: uuidv4(),
-      purchase_datetime: new Date(),
-      amount: total,
-      purchaser: cliente.email,
-      items: productos.map(p => ({
-        product: p.id,
-        quantity: p.cantidad,
-        price: p.price
-      })),
-      status: 'complete'
+      amount,
+      purchaser: userEmail
     });
+    const ticket = new TicketDTO(ticketDoc);
 
-    return { status: 'success', ticket };
+    // Actualizar carrito con los productos pendientes
+    await cartsDAO.replaceProducts(
+      cid,
+      unfulfilledItems.map(item => ({
+        product: item.id,
+        quantity: item.requested
+      }))
+    );
+
+    return { ticket, unfulfilledItems };
   }
-}
+};

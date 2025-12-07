@@ -1,61 +1,73 @@
-import ProductRepository from '../repositories/products.repository.js';
+import productsRepo from '../repositories/products.repository.js';
+import { ProductDTO } from '../dtos/product.dto.js';
 
-export const createProduct = async (req, res) => {
+// 🔹 Crear producto (solo admin)
+export async function createProduct(req, res, next) {
   try {
-    const { title, description, code, price, stock, category } = req.body;
-
-    if (!title || !description || !code || !price || !stock || !category) {
-      return res.status(400).json({ status: 'error', error: 'Todos los campos son obligatorios' });
-    }
-
-    const product = await ProductRepository.create(req.body);
-    res.status(201).json({ status: 'success', data: product });
-  } catch (error) {
-    res.status(500).json({ status: 'error', error: 'Error al crear producto' });
+    const product = await productsRepo.create(req.body);
+    const dto = new ProductDTO(product);
+    res.status(201).json({ status: 'success', payload: dto });
+  } catch (err) {
+    next(err); // pasa al errorHandler global
   }
-};
+}
 
-export const getProducts = async (req, res) => {
+// 🔹 Listar productos con paginación
+export async function getProducts(req, res, next) {
   try {
-    const products = await ProductRepository.getAll();
-    res.json({ status: 'success', data: products });
-  } catch (error) {
-    res.status(500).json({ status: 'error', error: 'Error al obtener productos' });
+    const products = await productsRepo.getAll(req.query);
+    const dtoProducts = products.docs.map(p => new ProductDTO(p));
+
+    res.json({
+      status: 'success',
+      payload: dtoProducts,
+      totalPages: products.totalPages,
+      page: products.page,
+      hasPrevPage: products.hasPrevPage,
+      hasNextPage: products.hasNextPage,
+      prevLink: products.prevLink || null,
+      nextLink: products.nextLink || null
+    });
+  } catch (err) {
+    next(err);
   }
-};
+}
 
-export const getProductById = async (req, res) => {
+// 🔹 Obtener producto por ID
+export async function getProductById(req, res, next) {
   try {
-    const product = await ProductRepository.getById(req.params.pid);
+    const product = await productsRepo.getById(req.params.pid);
     if (!product) {
       return res.status(404).json({ status: 'error', error: 'Producto no encontrado' });
     }
-    res.json({ status: 'success', data: product });
-  } catch (error) {
-    res.status(500).json({ status: 'error', error: 'Error al obtener producto' });
+    res.json({ status: 'success', payload: new ProductDTO(product) });
+  } catch (err) {
+    next(err);
   }
-};
+}
 
-export const updateProduct = async (req, res) => {
+// 🔹 Actualizar producto (solo admin)
+export async function updateProduct(req, res, next) {
   try {
-    const product = await ProductRepository.update(req.params.pid, req.body);
-    if (!product) {
+    const updated = await productsRepo.update(req.params.pid, req.body);
+    if (!updated) {
       return res.status(404).json({ status: 'error', error: 'Producto no encontrado' });
     }
-    res.json({ status: 'success', data: product });
-  } catch (error) {
-    res.status(500).json({ status: 'error', error: 'Error al actualizar producto' });
+    res.json({ status: 'success', payload: new ProductDTO(updated) });
+  } catch (err) {
+    next(err);
   }
-};
+}
 
-export const deleteProduct = async (req, res) => {
+// 🔹 Eliminar producto (solo admin)
+export async function deleteProduct(req, res, next) {
   try {
-    const product = await ProductRepository.delete(req.params.pid);
-    if (!product) {
+    const deleted = await productsRepo.delete(req.params.pid);
+    if (!deleted) {
       return res.status(404).json({ status: 'error', error: 'Producto no encontrado' });
     }
     res.json({ status: 'success', message: 'Producto eliminado correctamente' });
-  } catch (error) {
-    res.status(500).json({ status: 'error', error: 'Error al eliminar producto' });
+  } catch (err) {
+    next(err);
   }
-};
+}

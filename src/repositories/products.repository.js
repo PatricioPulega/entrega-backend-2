@@ -1,11 +1,27 @@
-import Product from '../dao/models/product.model.js';
+import ProductsDAO from '../dao/products.dao.js';
+
+const dao = new ProductsDAO();
 
 class ProductRepository {
-  async getAll() { return await Product.find(); }
-  async getById(id) { return await Product.findById(id); }
-  async create(data) { return await Product.create(data); }
-  async update(id, data) { return await Product.findByIdAndUpdate(id, data, { new: true }); }
-  async delete(id) { return await Product.findByIdAndDelete(id); }
+  async getAll(filter = {}, options = {}) {
+    return dao.getPaginated(filter, options);
+  }
+
+  async getById(id) {
+    return dao.findById(id);
+  }
+
+  async create(data) {
+    return dao.create(data);
+  }
+
+  async update(id, data) {
+    return dao.updateById(id, data);
+  }
+
+  async delete(id) {
+    return dao.deleteById(id);
+  }
 }
 
 export default new ProductRepository();

@@ -2,9 +2,9 @@
 
 Este proyecto implementa un backend para un e-commerce con:
 - Autenticación JWT
-- Autorización por roles (admin / user)
-- DAO / Repository / DTO
-- Recuperación de contraseña vía correo
+- Autorización por roles (`admin` / `user`)
+- Arquitectura DAO / Repository / DTO
+- Recuperación de contraseña vía correo electrónico
 
 ---
 
@@ -18,46 +18,27 @@ Este proyecto implementa un backend para un e-commerce con:
 
 - Instalar dependencias:
 npm install
-- Configurar variables de entorno en .env (ejemplo en .env.example):
-MONGO_URI=...
-JWT_SECRET=...
-PORT=3000
-MAIL_USER=...
-MAIL_PASS=...
-MAIL_HOST=smtp.gmail.com
-MAIL_PORT=587
-FRONT_BASE=http://localhost:5173
-
-
 - Ejecutar:
 - Desarrollo: npm run dev
 - Producción: npm start
-
-📑 Endpoints principales
-Autenticación
-- POST /api/sessions/register → Registro de usuario
+📑 Endpoints principales🔹 Autenticación- POST /api/sessions/register → Registro de usuario
 - POST /api/sessions/login → Login y obtención de JWT
 - GET /api/sessions/current → Usuario actual (requiere JWT)
 - POST /api/sessions/reset/request → Solicitud de reset de contraseña
 - POST /api/sessions/reset/confirm → Confirmación de reset
-Carritos
-- POST /api/carts → Crear carrito (user)
-- POST /api/carts/:cid/products/:pid → Agregar producto (user)
+🔹 Carritos- POST /api/carts → Crear carrito (user)
+- POST /api/carts/:cid/products/:pid → Agregar producto (user, con quantity)
 - PUT /api/carts/:cid/products/:pid → Actualizar cantidad (user)
 - DELETE /api/carts/:cid/products/:pid → Eliminar producto (user)
 - POST /api/carts/:cid/purchase → Finalizar compra y generar ticket (user)
-Productos
-- POST / PUT / DELETE /api/products → Gestión de productos (admin)
-
-👤 Roles y permisos
-- Admin → crear, editar y eliminar productos.
+🔹 Productos- POST /api/products → Crear producto (admin)
+- PUT /api/products/:pid → Actualizar producto (admin)
+- DELETE /api/products/:pid → Eliminar producto (admin)
+👤 Roles y permisos- Admin → crear, editar y eliminar productos.
 - User → manejar carritos y compras.
-
-🛠️ Tecnologías
-- Node.js + Express
+🛠️ Tecnologías- Node.js + Express
 - MongoDB + Mongoose
 - JWT + Passport
 - Nodemailer
 - Arquitectura DAO / Repository / DTO
-
 ⚔️ Entrega final Backend II - Patricio Pulega - Coderhous

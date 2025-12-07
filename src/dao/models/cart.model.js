@@ -1,24 +1,17 @@
-import mongoose from 'mongoose';
+// src/dao/models/cart.model.js
+import mongoose from "mongoose";
 
-const cartCollection = 'carts';
+const cartCollection = "carts";
 
 const cartSchema = new mongoose.Schema({
-  products: {
-    type: [
-      {
-        product: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'products'
-        },
-        quantity: {
-          type: Number,
-          default: 1
-        }
-      }
-    ],
-    default: []
-  }
-});
+  products: [{
+    product: { type: mongoose.Schema.Types.ObjectId, ref: "products", required: true },
+    quantity: { type: Number, required: true, min: 1 }
+  }]
+}, { timestamps: true });
 
-const Cart = mongoose.model(cartCollection, cartSchema);
-export default Cart;   // ✅ export default
+// ✅ Evita OverwriteModelError
+const CartModel = mongoose.models[cartCollection] 
+  || mongoose.model(cartCollection, cartSchema);
+
+export default CartModel;
