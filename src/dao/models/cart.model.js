@@ -1,4 +1,3 @@
-// src/dao/models/cart.model.js
 import mongoose from "mongoose";
 
 const cartCollection = "carts";

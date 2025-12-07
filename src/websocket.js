@@ -1,26 +1,36 @@
-import { productDBManager } from './dao/productDBManager.js';
-const ProductService = new productDBManager();
+import { Server } from 'socket.io';
+import ProductModel from './dao/models/product.model.js';
 
-export default (io) => {
-  io.on('connection', (socket) => {
-    socket.on('createProduct', async (data) => {
+export default function initWebSocket(httpServer) {
+  const io = new Server(httpServer);
+
+  io.on('connection', async socket => {
+    console.log('⚔️ Cliente conectado');
+
+    // Publicar productos iniciales
+    const products = await ProductModel.find();
+    io.emit('publishProducts', products);
+
+    // Crear producto
+    socket.on('createProduct', async data => {
       try {
-        await ProductService.createProduct(data);
-        const products = await ProductService.getAllProducts({});
-        io.emit('publishProducts', products.docs);
+        await ProductModel.create(data);
+        const products = await ProductModel.find();
+        io.emit('publishProducts', products);
       } catch (error) {
-        socket.emit('statusError', error.message);
+        socket.emit('statusError', 'Error creando producto');
       }
     });
 
-    socket.on('deleteProduct', async (data) => {
+    // Eliminar producto
+    socket.on('deleteProduct', async ({ pid }) => {
       try {
-        await ProductService.deleteProduct(data.pid);
-        const products = await ProductService.getAllProducts({});
-        io.emit('publishProducts', products.docs);
+        await ProductModel.findByIdAndDelete(pid);
+        const products = await ProductModel.find();
+        io.emit('publishProducts', products);
       } catch (error) {
-        socket.emit('statusError', error.message);
+        socket.emit('statusError', 'Error eliminando producto');
       }
     });
   });
-};
+}

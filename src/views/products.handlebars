@@ -1,0 +1,42 @@
+<div class="box">
+  <h1>Listado de productos</h1>
+
+  <section class="products-box">
+    {{#each products}}
+      <article class="product-card">
+        <h3>{{this.title}}</h3>
+        <hr>
+        <p>Código: {{this.code}}</p>
+        <p>Categoría: {{this.category}}</p>
+        <p>Precio: $ {{this.price}}</p>
+        <p>Stock: {{this.stock}}</p>
+        <p>Descripción: {{this.description}}</p>
+
+        {{#if this.thumbnails.length}}
+          <div class="thumbs">
+            {{#each this.thumbnails}}
+              <img src="{{this}}" alt="thumbnail" width="100">
+            {{/each}}
+          </div>
+        {{/if}}
+
+        <!-- Botón para agregar al carrito -->
+        <button class="button" onclick="addToCart('{{this._id}}')">
+          Agregar al carrito
+        </button>
+      </article>
+    {{else}}
+      <p>No hay productos disponibles.</p>
+    {{/each}}
+  </section>
+
+  <!-- Botón para ver carrito -->
+  <a id="button-cart" class="view-cart" style="display:none">Ver carrito</a>
+
+  <div class="pagination">
+    {{#if prevLink}} <a href="{{prevLink}}">Anterior</a> {{/if}}
+    {{#if nextLink}} <a href="{{nextLink}}">Siguiente</a> {{/if}}
+  </div>
+</div>
+
+<script src="/js/ecommerce.js"></script>

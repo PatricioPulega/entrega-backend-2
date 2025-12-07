@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import passport from 'passport';
 import helmet from 'helmet';
 import cors from 'cors';
+import initWebSocket from './websocket.js';
 
 import initializePassport from './config/passportConfig.js';
 import { connectDB } from './config/db.js';
@@ -60,6 +61,9 @@ app.use((req, res) => {
 // Error handler global
 app.use(errorHandler);
 
-app.listen(PORT, () => {
+
+const httpServer = app.listen(PORT, () => {
   console.log(`🚀 Servidor activo en puerto ${PORT}`);
 });
+
+initWebSocket(httpServer);

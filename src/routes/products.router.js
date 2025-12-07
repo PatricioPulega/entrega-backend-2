@@ -41,4 +41,4 @@ router.delete(
   deleteProduct
 );
 
-export default router;
+export default router

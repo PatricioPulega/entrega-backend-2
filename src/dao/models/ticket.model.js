@@ -1,4 +1,3 @@
-// src/dao/models/ticket.model.js
 import mongoose from "mongoose";
 
 const ticketCollection = "tickets";

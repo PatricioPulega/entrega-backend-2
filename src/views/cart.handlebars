@@ -1,4 +1,5 @@
 <div class="box">
+  <!-- Botón para volver al listado de productos -->
   <div class="view-products">
     <a id="button-products" class="button" href="/products">Volver</a>
   </div>
@@ -6,23 +7,31 @@
   <h1>Carrito</h1>
 
   <section class="products-box">
-    {{#each products}}
-      <article class="product-card">
-        <h3>{{this.product.title}}</h3>
-        <hr>
-        <p>Categoria: {{this.product.category}}</p>
-        <p>Precio: $ {{this.product.price}}</p>
-        <p>Cantidad: {{this.quantity}}</p>
-      </article>
-    {{/each}}
+    {{#if cart.products.length}}
+      {{#each cart.products}}
+        <article class="product-card">
+          <h3>{{this.product.title}}</h3>
+          <hr>
+          <p>Código: {{this.product.code}}</p>
+          <p>Categoría: {{this.product.category}}</p>
+          <p>Precio: $ {{this.product.price}}</p>
+          <p>Cantidad: {{this.quantity}}</p>
+          <p>Subtotal: $ {{multiply this.product.price this.quantity}}</p>
+        </article>
+      {{/each}}
+    {{else}}
+      <p>No hay productos en el carrito.</p>
+    {{/if}}
   </section>
 
+  <!-- Botón para finalizar compra -->
   <div class="footer">
-    <button id="button-purchase" onclick="finalizeCartPurchase('{{cartId}}')">
+    <button id="button-purchase" onclick="finalizeCartPurchase('{{cart._id}}')">
       Finalizar compra
     </button>
   </div>
 
+  <!-- Ticket generado -->
   {{#if ticket}}
     <div class="ticket-box">
       <h2>Ticket de compra</h2>
@@ -32,6 +41,7 @@
     </div>
   {{/if}}
 
+  <!-- Productos no disponibles -->
   {{#if unfulfilledItems}}
     <div class="unavailable-box">
       <h2>Productos no disponibles</h2>

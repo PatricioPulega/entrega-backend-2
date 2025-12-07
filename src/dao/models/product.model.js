@@ -1,4 +1,3 @@
-// src/dao/models/product.model.js
 import mongoose from "mongoose";
 import mongoosePaginate from "mongoose-paginate-v2";
 

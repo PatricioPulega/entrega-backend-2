@@ -1,10 +1,11 @@
 # 🛒 Backend II - Proyecto Final
 
-Este proyecto implementa un backend para un e-commerce con:
-- Autenticación JWT
-- Autorización por roles (`admin` / `user`)
-- Arquitectura DAO / Repository / DTO
-- Recuperación de contraseña vía correo electrónico
+Este proyecto implementa un backend para un **e-commerce** con:
+
+- 🔑 Autenticación JWT
+- 👤 Autorización por roles (`admin` / `user`)
+- 🏗️ Arquitectura DAO / Repository / DTO
+- 📧 Recuperación de contraseña vía correo electrónico
 
 ---
 
@@ -19,8 +20,10 @@ Este proyecto implementa un backend para un e-commerce con:
 - Instalar dependencias:
 npm install
 - Ejecutar:
-- Desarrollo: npm run dev
-- Producción: npm start
+- Desarrollo:
+npm run dev
+- Producción:
+npm start
 📑 Endpoints principales🔹 Autenticación- POST /api/sessions/register → Registro de usuario
 - POST /api/sessions/login → Login y obtención de JWT
 - GET /api/sessions/current → Usuario actual (requiere JWT)
@@ -41,4 +44,4 @@ npm install
 - JWT + Passport
 - Nodemailer
 - Arquitectura DAO / Repository / DTO
-⚔️ Entrega final Backend II - Patricio Pulega - Coderhous
+⚔️ Entrega finalBackend II - Patricio Pulega - Coderhouse

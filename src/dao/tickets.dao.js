@@ -1,4 +1,3 @@
-// src/dao/tickets.dao.js
 import mongoose from 'mongoose';
 import TicketModel from './models/ticket.model.js';
 

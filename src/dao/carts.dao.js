@@ -1,4 +1,3 @@
-// src/dao/carts.dao.js
 import mongoose from 'mongoose';
 import CartModel from './models/cart.model.js';
 
